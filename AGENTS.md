@@ -22,7 +22,7 @@ Stage iframe = this app
   iframe through `definition.runtime.executeTool` (`src/runtime/tools.ts`).
   The host never imports your React state.
 - `mountPlayground3StageApp` (`src/main.tsx`) wires StageBridge for you.
-  `src/host/stageBridge.ts` covers the host features that SDK `0.1.9` does
+  `src/host/stageBridge.ts` covers the host features that SDK `0.1.10` does
   not wrap: records, secrets, third-party HTTP and attached MCP.
 - Outside a host (a plain Vite tab) the app renders, but every host call
   fails. Use `npm run dev`, which opens `dev/host.html`, a mock host.
@@ -42,14 +42,14 @@ pass, and the change works in the mock host.
 
 ## Hard rules
 
-1. **Pin `@startdownnotez404/playground3-stage-sdk` to exactly `0.1.9`.** Do
-   not use GitHub Packages, a GitHub Release URL, `github:`, `file:`,
-   `vendor/` or a range. Import only from the package root (and
+1. **Pin `@startdownnotez404/playground3-stage-sdk` to exactly `0.1.10`.** Do
+   not use GitHub Packages, a GitHub Release URL, `github:`, `file:`
+   or a range. Import only from the package root (and
    `@startdownnotez404/ui`, `/theme`, `/chart`, `/markdown`, `/flowMap` for
-   widgets). The npm `0.1.9` build does **not** export
-   `connectPlayground3AttachedMcp`, `parsePlayground3McpAdapterJson`,
-   `AppFileUpload` or `Playground3AppSecretField`. Use
-   `src/host/stageBridge.ts` instead.
+   widgets). `0.1.10` exports `connectPlayground3AttachedMcp`,
+   `parsePlayground3McpAdapterJson`, `AppFileUpload` and
+   `Playground3AppSecretField`. App records, app secrets and third-party
+   calls are not wrapped yet: use `src/host/stageBridge.ts` for those.
 2. **Never import platform internals**: `@/shared/playground3/agent|executor|contracts`,
    `FrontendGraphTurnExecutor`, `runAgentLoop`, Amplify, ChatDock. They do
    not exist in the sandbox: Author rejects workspaces that carry them, and

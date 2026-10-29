@@ -12,7 +12,7 @@
  */
 
 export const STAGE_SDK_PACKAGE = "@startdownnotez404/playground3-stage-sdk";
-export const STAGE_SDK_VERSION = "0.1.9";
+export const STAGE_SDK_VERSION = "0.1.10";
 export const MAX_ZIP_BYTES = 20 * 1024 * 1024;
 
 export const ZIP_TEXT_EXTENSIONS = new Set([
@@ -434,11 +434,6 @@ export const parseMcpAdapter = (value) => {
   }
   if (!parseString(value.server.url)) {
     throw new Error("Playground3 MCP adapter server.url is required.");
-  }
-  if (value.connector != null) {
-    throw new Error(
-      "Playground3 MCP adapter `connector` recipes are no longer supported. Use `requires` and `proposals`."
-    );
   }
   const parseNames = (names) => {
     if (names == null) {

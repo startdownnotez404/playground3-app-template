@@ -33,8 +33,6 @@ app-specific code.
 | `adapter` | `builtins: ["fetch", "fs.read"]` plus `tools: [{ name, description, inputSchema, run: { type: "http", method, url, headers?, body? } \| { type: "command", command, args } }]` |
 | `script` | an app-provided JS module exporting `tools` and `callTool(name, args)`, run by the connector |
 
-The legacy `connector` recipe field is rejected. Use `requires` and `proposals`.
-
 ## 1. `mcp.adapter.json`
 
 Copy `samples/mcp.adapter.json` to the app root and edit it. Shape
@@ -80,16 +78,15 @@ prompts appear in the connector's window, and each can wait for the user for
 up to about 3 minutes. Chrome may also ask for local-network access from the
 HTTPS site. Show `runtime.lastError` when `liveTools` is empty.
 
-SDK `0.1.9` on npm does not export `connectPlayground3AttachedMcp` or
-`parsePlayground3McpAdapterJson`. Use `src/host/stageBridge.ts` as shown.
+SDK `0.1.10` also exports `connectPlayground3AttachedMcp` and
+`parsePlayground3McpAdapterJson`; either that or `src/host/stageBridge.ts`
+works.
 
 ## 3. Let agents use the tools
 
 - In `agentDefinitions.ts`, give the agent `capabilities.attachedMcp: "all"`
   (or a list of tool names) and list the namespaced names in
-  `capabilities.tools`, as `examples/lol-tutor` does. The `0.1.9` typings do
-  not declare `attachedMcp` yet, so cast the capabilities object
-  (`as Playground3AgentDefinition["capabilities"]`).
+  `capabilities.tools`, as `examples/lol-tutor` does.
 - Add the namespaced names to the node's `task.tools` in the topology so
   the node is allowed to call them.
 - Optionally, add the catalog tools (namespaced) to your manifest so prompts

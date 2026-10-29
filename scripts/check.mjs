@@ -41,9 +41,6 @@ const attempt = (label, fn) => {
 };
 
 // 1. app.config.json (+ APIShape.json when secrets are declared)
-if (read("playground3.json")?.trim()) {
-  errors.push("playground3.json is not used. Rename it to app.config.json.");
-}
 const configRaw = read("app.config.json");
 if (configRaw === undefined) {
   errors.push("app.config.json is missing. Author only lists folders that have one.");
@@ -92,9 +89,6 @@ if (pkg) {
       `package.json must pin ${STAGE_SDK_PACKAGE} to "${STAGE_SDK_VERSION}" (found ${JSON.stringify(sdk ?? null)}). Author installs exactly that npmjs version.`
     );
   }
-  if (pkg.dependencies?.["@startdown/playground3-stage-sdk"]) {
-    errors.push("Remove the legacy @startdown/playground3-stage-sdk dependency.");
-  }
   if (!pkg.scripts?.dev) {
     errors.push('package.json needs a "dev" script (Author runs npm run dev).');
   }
@@ -139,9 +133,6 @@ for (const file of dropped) {
       `${file.relative} will be dropped from the zip (allowed: .ts .tsx .js .jsx .mjs .cjs .json .md .css .html .svg .txt .py, .gitignore, .nvmrc, LICENSE). Inline it as a data URL in a .ts file, or use .svg.`
     );
   }
-}
-if (files.some((file) => file.relative.startsWith("vendor/"))) {
-  errors.push("vendor/ is not allowed. Install the Stage SDK from npm.");
 }
 for (const file of kept) {
   if (file.bytes > STORE_LIMITS.maxFileBytes) {

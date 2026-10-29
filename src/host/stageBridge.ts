@@ -1,7 +1,8 @@
 /**
  * Direct StageBridge calls for host features the published Stage SDK
- * (npmjs 0.1.9) does not wrap yet: app records, app secrets, third-party API
- * calls, and attached MCP. Same envelope the SDK uses; the host (Author,
+ * (npmjs 0.1.10) does not wrap yet: app records, app secrets and third-party
+ * API calls. Attached MCP also lives here, though 0.1.10 now exports
+ * connectPlayground3AttachedMcp too. Same envelope the SDK uses; the host (Author,
  * /playground3/bundle, or dev/host.html locally) answers.
  *
  * Never send `playgroundId`, `url`, `shapeJson`, or a secret value in params:

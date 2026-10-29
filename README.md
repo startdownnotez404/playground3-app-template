@@ -5,6 +5,12 @@ A minimal Playground3 Stage app: a note list plus one MCP tool
 on a laptop against a local mock host, then zip it and load it in Playground
 Author.
 
+> **Where this lives.** This repo is generated from
+> [`startdownnotez404/monorepo` → `templates/playground3-app`](https://github.com/startdownnotez404/monorepo/tree/dev/templates/playground3-app)
+> and overwritten on every sync. Start your own app with **Use this template**
+> or `npx degit startdownnotez404/playground3-app-template my-app`. Send
+> changes to the template itself to the monorepo, not here.
+
 ```bash
 npm install
 npm run dev        # opens dev/host.html, a mock StageBridge host
@@ -18,7 +24,7 @@ npm run zip        # <id>.zip with exactly the files Author keeps
 | Package | Version | Notes |
 | --- | --- | --- |
 | Node | 22 (`.nvmrc`), ≥ 20 | |
-| `@startdownnotez404/playground3-stage-sdk` | **`0.1.9`** (exact) | Same pin as Author's overlay (`PLAYGROUND3_STAGE_SDK_VERSION`). `npm run check` fails on any other value. |
+| `@startdownnotez404/playground3-stage-sdk` | **`0.1.10`** (exact) | Same pin as Author's overlay (`PLAYGROUND3_STAGE_SDK_VERSION`). `npm run check` fails on any other value. |
 | `@startdownnotez404/ui` | `^1.3.12` | Widgets, `/theme`, `/chart`, `/markdown`, `/flowMap`. Public npmjs. |
 | `react`, `react-dom` | `18.3.1` | |
 | `vite` | `^5.4.11` (resolves 5.4.21) | `vite-plugin-singlefile` 2.3.4 needs ≥ 5.4.21, so an exact `5.4.11` pin can't install. `^5.4.11` is the range Author's overlay uses. |
@@ -79,7 +85,7 @@ protocol. Use it to:
 - Toggle light/dark, watch checkpoints, and read the StageBridge log.
 
 The harness lives in the template (`dev/`), not in the SDK. The Stage SDK is
-an opaque npm package pinned to `0.1.9`, and a dev host inside it would need a
+an opaque npm package pinned to `0.1.10`, and a dev host inside it would need a
 new SDK release before any template could use it. The mock speaks the same
 postMessage protocol the real host does, so the app code is identical in both.
 

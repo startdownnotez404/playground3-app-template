@@ -159,9 +159,6 @@ const connectMockAttachedMcp = (adapter, routeId) => {
   if (!/^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])(:\d+)?\//.test(url)) {
     throw new Error("Attached MCP server.url must be loopback (MCP Connector is http://127.0.0.1:3920/mcp).");
   }
-  if (adapter.connector != null) {
-    throw new Error("Playground3 MCP adapter `connector` recipes are no longer supported. Use `requires` and `proposals`.");
-  }
   const tools = (adapter.catalog?.tools ?? []).map((tool) => ({
     ...tool,
     name: namespaced(tool.name, adapter.namespace),

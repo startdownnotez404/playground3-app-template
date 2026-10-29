@@ -44,7 +44,6 @@ From `packPlayground3ZipInBrowser.ts`, `buildPlayground3AuthorWorkspace.ts`,
 | Paths | No absolute paths and no `..`. Zip64 is not supported. Only stored or deflate entries. |
 | Root folder | A single top-level folder is stripped, so zipping `my-app/` or its contents both work. |
 | App discovery | `app.config.json` at the root, or one or two folders deep (catalog zips). |
-| Legacy | `playground3.json` is rejected; rename it to `app.config.json`. |
 
 `npm run zip` applies these filters plus the store's file-type rule (below),
 so the zip contains what both Author and the store accept. `npm run check` fails when a file under `src/` or `public/` would be
@@ -91,7 +90,7 @@ anything. `npm run check` mirrors these rules:
 `applyPlayground3AuthorOverlay` runs on every upload:
 
 - **package.json**: pins `@startdownnotez404/playground3-stage-sdk` to
-  `0.1.9`, removes the legacy `@startdown/playground3-stage-sdk`, adds
+  `0.1.10`, adds
   `@startdownnotez404/ui` if it is missing, and adds the CJS shim deps
   (`attr-accept`, `base64-js`, `buffer`, `ieee754`). A fallback
   `package.json` is generated if none exists.
@@ -99,23 +98,18 @@ anything. `npm run check` mirrors these rules:
   `npm-shrinkwrap.json`, `yarn.lock`, `pnpm-lock.yaml`), which installs from
   your `package.json` ranges. Keep the ranges valid on their own, and still
   commit `package-lock.json`, because the store requires it.
-- **`.npmrc`** is deleted if it points at `npm.pkg.github.com`. **`vendor/`**
-  SDK copies are deleted.
 - **vite.config**: Author rewrites it by text pattern. It adds `dedupe`,
   `optimizeDeps` (`include` React + CJS shims, `exclude` the SDK,
   `noDiscovery: true`, `holdUntilCrawlEnd: false`) and
-  `server.preTransformRequests: false`, strips `server.fs.allow`, and
+  `server.preTransformRequests: false`, and
   injects two serve-only plugins. Keep the template's shape: a literal
   `optimizeDeps: { exclude: ["@startdownnotez404/playground3-stage-sdk"] }`,
   and no computed config objects. A fallback config is generated if none
   exists.
-- **tsconfig**: SDK and ui path aliases are removed.
 - **index.html**: Author injects the appearance bootstrap, a transparent
   canvas, a loading placeholder and a module boot script.
-- **Imports**: legacy platform paths (`@/shared/playground3`,
-  `@/src/features/playground3/runtime/stage/sdk`, …) are rewritten to the
-  SDK package. Heavy ui widgets imported from `@startdownnotez404/ui`
-  (`Markdown`, `FlowMap`, `JsonEditor`) are moved to their subpaths.
+- **Imports** are not rewritten. Import `Markdown`, `FlowMap` and
+  `JsonEditor` from their `@startdownnotez404/ui/…` subpaths yourself.
 
 The dev host plugin (`dev/devHostPlugin.mjs`) does nothing in the
 WebContainer: it detects `process.versions.webcontainer` and skips both its
@@ -128,7 +122,7 @@ optimizeDeps tweak and opening the browser.
 | "No app.config.json found in this zip" | The zip root or the first two folder levels need `app.config.json`. |
 | "app.config.json must include an id" | Add `id`. |
 | "APIShape.json is required when app.config.json lists appSecrets…" | Add `APIShape.json` at the app root. Its `.json` extension is kept. |
-| "Slim author workspace missing … (0.1.9)" | Set the SDK dependency to exactly `"0.1.9"`. |
+| "Slim author workspace missing … (0.1.10)" | Set the SDK dependency to exactly `"0.1.10"`. |
 | "Slim author workspace must not mount platform agent sources" | Remove copied `shared/playground3/agent|executor|contracts` files. |
 | Preview is blank or stuck on Rendering | Check the WebContainer console. Usually it is a runtime error in `main.tsx` or `Shell`. Reproduce with `npm run dev` and `?bundle=dist/index.html`. |
 | A missing image or font | It was dropped by the extension filter. Inline it. |
