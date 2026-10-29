@@ -1,0 +1,100 @@
+{
+  "version": "2.0",
+  "name": "My Playground3 App",
+  "description": "One agent node that answers the human and may add notes through notes.addNote.",
+  "performers": [
+    {
+      "id": "fast",
+      "provider": "openai",
+      "model": "$selected",
+      "costTier": "low",
+      "strengths": ["reasoning"]
+    }
+  ],
+  "subagents": {
+    "assistant": {
+      "reasoning": false,
+      "responseSchema": "agent_reply",
+      "performerId": "fast"
+    }
+  },
+  "nodes": {
+    "assist": {
+      "nodeType": "execute",
+      "outcomes": ["done"],
+      "inheritSessionContext": true,
+      "loopPolicy": {
+        "maxSteps": 8
+      },
+      "task": {
+        "preloadSkills": ["add-note"],
+        "skills": [],
+        "tools": ["notes.addNote"]
+      },
+      "agent": "assistant"
+    }
+  },
+  "graph": {
+    "entryNodeId": "assist",
+    "edges": [],
+    "parallel": [],
+    "groups": [
+      {
+        "id": "assistTurn",
+        "label": "Assistant",
+        "nodeIds": ["assist"],
+        "exitNodeId": "assist",
+        "lane": "assistTurn"
+      }
+    ]
+  },
+  "initialState": {
+    "notes": []
+  },
+  "actions": [
+    {
+      "description": "Append one short note to the frontend-owned note list.",
+      "inputJsonSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Note text, one line, at most 280 characters."
+          }
+        },
+        "required": ["text"],
+        "additionalProperties": false
+      },
+      "actionType": "notes.addNote"
+    }
+  ],
+  "toolSets": {
+    "noteActions": ["notes.addNote"]
+  },
+  "skillSets": {},
+  "lanes": {
+    "assistTurn": {
+      "label": "Assistant context",
+      "scope": {
+        "kind": "nodeGraph"
+      }
+    }
+  },
+  "responseSchemas": {
+    "agent_reply": {
+      "kind": "text"
+    }
+  },
+  "options": {
+    "maxTurns": 8,
+    "turnTimeout": 60000,
+    "defaultOutcome": "done"
+  },
+  "workflow": {
+    "profile": "strict",
+    "macro": {
+      "unit": "assistTurn",
+      "advanceBy": "routeOutcome"
+    }
+  }
+}

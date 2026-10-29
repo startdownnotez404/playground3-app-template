@@ -1,0 +1,84 @@
+{
+  "$comment": [
+    "SAMPLE. To use it: copy to the app root as mcp.adapter.json, import it from",
+    "src/agent/contract/manifest.ts, and send it to the host with",
+    "connectAttachedMcp(adapter, APP_PLAYGROUND3_ID) (src/host/stageBridge.ts).",
+    "Shape: apps/web/shared/playground3/mcp/adapter.ts (Playground3McpAdapterDocument).",
+    "- version must be 1; id, name, server.url required.",
+    "- server.url is MCP Connector's gateway on loopback: http://127.0.0.1:3920/mcp",
+    "  (transport streamable-http | sse). The host refuses non-loopback URLs.",
+    "- requires: capability names the app needs. proposals: servers the connector",
+    "  shows the user in full; nothing runs until the user saves it.",
+    "  This sample proposes the connector's builtin fetch (spec.kind adapter, builtins [fetch]).",
+    "  spec.kind: stdio | http | adapter | script. The legacy 'connector' field is rejected.",
+    "- discovery: live = use the gateway's tools/list when it returns tools (catalog entries overlay promptHint/humanApproval by name); catalog = only catalog.tools.",
+    "- namespace prefixes tool names for the agent: fetch -> local.fetch.",
+    "- Agents reach these tools when capabilities.attachedMcp is 'all' or a list of names."
+  ],
+  "version": 1,
+  "id": "local",
+  "name": "Local tools",
+  "server": {
+    "transport": "streamable-http",
+    "url": "http://127.0.0.1:3920/mcp"
+  },
+  "requires": [
+    "example.fetch"
+  ],
+  "proposals": [
+    {
+      "id": "example-fetch",
+      "name": "Example fetch",
+      "provides": [
+        "example.fetch"
+      ],
+      "spec": {
+        "kind": "adapter",
+        "builtins": [
+          "fetch"
+        ],
+        "tools": []
+      }
+    }
+  ],
+  "discovery": "live",
+  "namespace": "local",
+  "catalog": {
+    "tools": [
+      {
+        "name": "fetch",
+        "description": "HTTP request from this computer (MCP Connector builtin). http and https only.",
+        "promptHint": "Call with {\"url\":\"http://127.0.0.1:8080/status\"}.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "method": {
+              "type": "string"
+            },
+            "headers": {
+              "type": "object"
+            },
+            "body": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "humanApproval": {
+          "required": true,
+          "title": "Fetch from this computer",
+          "message": "Let the agent make an HTTP request from your machine.",
+          "acceptLabel": "Allow"
+        }
+      }
+    ]
+  },
+  "approvals": {
+    "defaultRequired": true
+  }
+}

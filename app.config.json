@@ -1,0 +1,9 @@
+{
+  "id": "playground3-my-app",
+  "title": "My Playground3 App",
+  "fileName": "playground3-my-app.html",
+  "description": "Starter Playground3 app: a note list the agent can add to through one MCP tool.",
+  "appRecords": [
+    { "kind": "NOTE", "label": "Saved note" }
+  ]
+}

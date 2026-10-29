@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Playground3 App</title>
+    <style>
+      :root {
+        --app-ink: var(--mui-palette-text-primary, #1c1c1c);
+        --app-ink-muted: var(--mui-palette-text-secondary, #5c5c5c);
+      }
+      html, body, #root {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        box-sizing: border-box;
+        background: transparent !important;
+        background-color: transparent !important;
+        /* UA canvas stays clear so Author wallpaper shows. Tokens still
+           follow the html color-scheme *attribute* (ui-lib). */
+        color-scheme: light !important;
+        color: var(--app-ink);
+      }
+      /* Fill only the stage root. Do not stretch every child — notistack
+         toast hosts as siblings get painted as a band over the stage. */
+      #root {
+        display: flex;
+        flex-direction: column;
+      }
+      #root > [data-app-stage-root] {
+        flex: 1 1 0%;
+        min-width: 0;
+        min-height: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+    <script>
+      (function () {
+        function apply(mode) {
+          if (mode === "light" || mode === "dark") {
+            document.documentElement.setAttribute("color-scheme", mode);
+            document.documentElement.setAttribute("data-mui-color-scheme", mode);
+          }
+        }
+        try {
+          apply(new URLSearchParams(location.hash.slice(1)).get("appearance"));
+        } catch (e) {}
+        window.addEventListener("message", function (event) {
+          var data = event.data;
+          if (!data || data.channel !== "playground3.stageBridge" || data.version !== 1) return;
+          var msg = data.message;
+          if (!msg) return;
+          if (msg.kind === "appearance") apply(msg.mode);
+          else if (msg.kind === "hostState" && msg.state) apply(msg.state.appearanceMode);
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "$comment": [
+    "SAMPLE. To use it: copy to the app root as APIShape.json and declare every",
+    "{{secret.NAME}} used below in app.config.json, e.g.",
+    "  \"appSecrets\": [{ \"name\": \"OPENWEATHER_API_KEY\", \"label\": \"OpenWeather API key\", \"required\": true }]",
+    "Rules (apps/web/shared/playground3/apiShape.ts):",
+    "- calls[]: 1-64 entries, unique id (letter then [A-Za-z0-9_], max 64).",
+    "- method: GET | POST | PUT | PATCH | DELETE. probe: true only on GET; ChatDock",
+    "  'Test' uses it and never returns the body.",
+    "- Either path + hosts (bare hostnames, no scheme/port/path; '*' in path = one segment)",
+    "  or a url that is itself a {{secret.NAME}} template (e.g. a webhook URL).",
+    "- Every call must use at least one {{secret.NAME}}; every NAME must be in",
+    "  app.config.json appSecrets or scopedSecrets. No 'payload' key. Max 64 KB.",
+    "- The iframe sends only { name, action: <call id>, paramsJson }. It never sends",
+    "  url, shapeJson, playgroundId, or a secret value."
+  ],
+  "calls": [
+    {
+      "id": "probe",
+      "method": "GET",
+      "probe": true,
+      "hosts": ["api.openweathermap.org"],
+      "path": "/data/2.5/weather",
+      "query": {
+        "q": "London",
+        "appid": "{{secret.OPENWEATHER_API_KEY}}"
+      }
+    },
+    {
+      "id": "currentWeather",
+      "method": "GET",
+      "hosts": ["api.openweathermap.org"],
+      "path": "/data/2.5/weather",
+      "query": {
+        "appid": "{{secret.OPENWEATHER_API_KEY}}",
+        "units": "metric"
+      }
+    }
+  ]
+}

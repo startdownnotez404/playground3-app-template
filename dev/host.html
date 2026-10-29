@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playground3 mock host</title>
+    <style>
+      :root {
+        --bg: #f5f5f4;
+        --panel: #ffffff;
+        --ink: #1c1c1c;
+        --muted: #6b6b6b;
+        --edge: #dcdcdc;
+        --accent: #2f5bd3;
+        --ok: #2e7d32;
+        --err: #c62828;
+        color-scheme: light;
+      }
+      :root[data-appearance="dark"] {
+        --bg: #161616;
+        --panel: #1f1f1f;
+        --ink: #ececec;
+        --muted: #a0a0a0;
+        --edge: #333333;
+        --accent: #8aa8ff;
+        /* Stay "light": the app pins color-scheme light on its canvas, and
+           Chromium paints an iframe opaque white when the embedder's
+           color-scheme differs. Palette tokens follow the attribute instead. */
+        color-scheme: light;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font: 13px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        display: flex;
+      }
+      #stage { flex: 1 1 auto; min-width: 0; padding: 12px; }
+      #stage iframe {
+        width: 100%;
+        height: 100%;
+        border: 1px solid var(--edge);
+        border-radius: 8px;
+        background: transparent;
+      }
+      aside {
+        width: 380px;
+        flex: 0 0 380px;
+        border-left: 1px solid var(--edge);
+        background: var(--panel);
+        overflow: auto;
+        padding: 12px 14px 24px;
+      }
+      h1 { font-size: 14px; margin: 0 0 2px; }
+      h2 {
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 18px 0 6px;
+      }
+      .muted { color: var(--muted); }
+      .row { display: flex; gap: 6px; align-items: center; }
+      textarea, input {
+        width: 100%;
+        font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--edge);
+        border-radius: 6px;
+        padding: 6px;
+      }
+      button {
+        font: inherit;
+        color: #fff;
+        background: var(--accent);
+        border: 0;
+        border-radius: 6px;
+        padding: 5px 10px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--edge); }
+      .tool { border: 1px solid var(--edge); border-radius: 6px; padding: 6px; margin-bottom: 6px; }
+      .tool code { font-weight: 600; }
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      #log { max-height: 320px; overflow: auto; border-top: 1px solid var(--edge); }
+      #log div { border-bottom: 1px solid var(--edge); padding: 3px 0; }
+      .in { color: var(--accent); }
+      .out { color: var(--ok); }
+      .err { color: var(--err); }
+      .badge {
+        display: inline-block;
+        padding: 0 6px;
+        border-radius: 10px;
+        border: 1px solid var(--edge);
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="stage"><iframe id="app" title="Playground3 app"></iframe></main>
+    <aside>
+      <h1 id="title">Playground3 mock host</h1>
+      <div class="muted" id="subtitle">Loading app.config.json…</div>
+      <div class="row" style="margin-top: 8px">
+        <span class="badge" id="ready">waiting for iframeReady</span>
+        <button class="ghost" id="appearance">Dark</button>
+        <button class="ghost" id="reload">Reload app</button>
+      </div>
+
+      <h2>Composer (mock inference)</h2>
+      <textarea id="prompt" rows="3" placeholder='Type a message. "/call notes.addNote {&quot;text&quot;:&quot;hi&quot;}" simulates the model calling a tool.'></textarea>
+      <div class="row" style="margin-top: 6px">
+        <button id="send">Send</button>
+        <span class="muted" id="turnStatus"></span>
+      </div>
+      <pre id="reply" class="muted" style="margin-top: 6px"></pre>
+
+      <h2>MCP tools (from stage.getTurnContext)</h2>
+      <div id="tools" class="muted">Waiting for the app…</div>
+
+      <h2>App records (localStorage)</h2>
+      <div class="row">
+        <button class="ghost" id="recordsRefresh">Refresh</button>
+        <button class="ghost" id="recordsClear">Clear all</button>
+      </div>
+      <pre id="records" class="muted"></pre>
+
+      <h2>App secrets (.env.local)</h2>
+      <pre id="secrets" class="muted"></pre>
+
+      <h2>Attached MCP (mock)</h2>
+      <pre id="attached" class="muted">Not connected.</pre>
+
+      <h2>Checkpoint</h2>
+      <pre id="checkpoint" class="muted">None yet.</pre>
+
+      <h2>StageBridge log</h2>
+      <div id="log"></div>
+    </aside>
+    <script type="module" src="./host.js"></script>
+  </body>
+</html>
